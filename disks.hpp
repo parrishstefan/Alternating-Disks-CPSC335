@@ -144,33 +144,31 @@ public:
 sorted_disks sort_lawnmower(const disk_state& before) {
   // TODO: Write code for this function, including rewriting the return
   // statement, and then delete these comments.
-  disk_state after = before;
-  int swapCount = 0;
-  int totalCount = after.total_count();
-
-  // for( int i = 0; i < totalCount; i++) {
-  //   for( int j = i; j < totalCount - 1; j++) {
-  //     if(after.get(j) == DISK_DARK && after.get(j + 1) == DISK_LIGHT) {
-  //       after.swap(j);
-  //       swapCount++;
-  //     }
-
-  //   }
-  //   totalCount--;
+    disk_state after = before;
+    int swapCount = 0;
+    int totalCount = after.total_count();
+    int rotation = 0;
+    int loops = 0;
     
-  //   for( int k = totalCount - 1; k > i; k--) {
-  //     if(after.get(k) == DISK_LIGHT &&  after.get(k - 1) == DISK_DARK) {
-  //       after.swap(k - 1);
-  //       swapCount++;
-  //     }
-  //   }
-///////////////////////////////////////////////////
-    for (int i = 0; i < totalCount; i++) {
-      if(after.get(i) == DISK_DARK && after.get(i+1) == DISK_LIGHT) {
-        after.swap(i);
+    while(!after.is_sorted()) {
+        for (int i = rotation; i < (totalCount - 1) - rotation; i++) {
+            if(after.get(i) == DISK_DARK && after.get(i+1) == DISK_LIGHT) {
+                after.swap(i);
+                swapCount++;
+            }
+        }
+        rotation++;
+
+        for (int j = (totalCount - 1) - rotation; j > rotation; j--) {
+            if(after.get(j) == DISK_LIGHT && after.get(j-1) == DISK_DARK) {
+                after.swap(j-1);
+                swapCount++;
+            }
+        }
+        rotation++;
+        loops++;
     }
     
-  }
 
 
   return sorted_disks(after, swapCount);
