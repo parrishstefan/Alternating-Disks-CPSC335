@@ -6,3 +6,4 @@ Group members:
 Stefan Parrish parrishstefan@csu.fullerton.edu
 
 Alex Lu alexluc2001@csu.fullerton.edu
+

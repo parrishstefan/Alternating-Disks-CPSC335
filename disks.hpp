@@ -102,16 +102,16 @@ public:
   bool is_sorted() const {
     // TODO: Write code for this function, including rewriting the return
     // statement, and then delete these comments.
-    bool isSorted = true;
-    int lightCount = light_count();
+    bool isSorted = true;                     //SC = 1
+    int lightCount = light_count();           //SC = 1
 
-    for (int i = 0; i < lightCount; i++) {
-      if(get(i) == DISK_DARK) {
-        isSorted =  false;
+    for (int i = 0; i < lightCount; i++) {    //SC = (n+1)*(1+1) = 2n+2
+      if(get(i) == DISK_DARK) {               //SC = 1+1
+        isSorted =  false;                    //SC = 1
       }
     }
     
-    return isSorted;  
+    return isSorted;                          //total SC = 1+1+2n+2 = 2n+4
   }
 };
 
@@ -141,59 +141,60 @@ public:
 };
 
 // Algorithm that sorts disks using the lawnmower algorithm.
-sorted_disks sort_lawnmower(const disk_state& before) {
+sorted_disks sort_lawnmower(const disk_state& before) { 
   // TODO: Write code for this function, including rewriting the return
   // statement, and then delete these comments.
-    disk_state after = before;
-    int swapCount = 0;
-    int totalCount = after.total_count();
-    int rotation = 0;
-    int loops = 0;
-    
-    while(!after.is_sorted()) {
-        for (int i = rotation; i < (totalCount - 1) - rotation; i++) {
-            if(after.get(i) == DISK_DARK && after.get(i+1) == DISK_LIGHT) {
+    disk_state after = before;                                                    //SC = 1//
+    int swapCount = 0;                                                            //SC = 1//
+    int totalCount = after.total_count();                                         //SC = 1//
+    int rotation = 0;                                                             //SC = 1//
+    int loops = 0;                                                                //SC = 1//
+
+    while(!after.is_sorted()) {                                                   //SC = (2n+4)*[(4n-8r)+(1)+(4n-8r)+(1)+(1)] = 16n^2-64r-32nr+38n+12
+        for (int i = rotation; i < (totalCount - 1) - rotation; i++) {            //SC = [(n-1-r)-r+1]*[3+1] = 4n-8r//
+            if(after.get(i) == DISK_DARK && after.get(i+1) == DISK_LIGHT) {       //SC = 3+1
                 after.swap(i);
-                swapCount++;
+                swapCount++;                                                      //SC = 1
             }
         }
-        rotation++;
+        rotation++;                                                               //SC = 1//
 
-        for (int j = (totalCount - 1) - rotation; j > rotation; j--) {
-            if(after.get(j) == DISK_LIGHT && after.get(j-1) == DISK_DARK) {
-                after.swap(j-1);
-                swapCount++;
+        for (int j = (totalCount - 1) - rotation; j > rotation; j--) {            //SC = -([r-(n-1-r)]+1)*[3+1] = 4n-8r//
+            if(after.get(j) == DISK_LIGHT && after.get(j-1) == DISK_DARK) {       //SC = 3+1
+                after.swap(j-1);                                                  
+                swapCount++;                                                      //SC = 1
             }
         }
-        rotation++;
-        loops++;
+        rotation++;                                                               //SC = 1//
+        loops++;                                                                  //SC = 1//
     }
-    
 
 
+    std::cout << "HERE: " << rotation << std::endl;
+    std::cout << "HERE2: " << after.total_count() << std::endl;
   return sorted_disks(after, swapCount);
-}
+}                                                                                 //Total SC: 16n^2-64r-32nr+38n+12+5 = 16n^2-64r-32nr+38n+17
 
 
 // Algorithm that sorts disks using the alternate algorithm.
 sorted_disks sort_alternate(const disk_state& before) {
   // TODO: Write code for this function, including rewriting the return
   // statement, and then delete these comments.
-  disk_state after = before;
-  int swapCount = 0;
-  int totalCount = after.total_count();
+  disk_state after = before;                                                //SC = 1//
+  int swapCount = 0;                                                        //SC = 1//
+  int totalCount = after.total_count();                                     //SC = 1//
 
-  for( int i = 0; i < totalCount; i++) {
-    for( int j = i; j < totalCount - 1; j++) {
-      if(after.get(j) == DISK_DARK && after.get(j + 1) == DISK_LIGHT) {
+  for( int i = 0; i < totalCount; i++) {                                    //SC = (n+1)*(4n-4-4i+1) = 4n^2-4in-4i+n-3
+    for( int j = i; j < totalCount - 1; j++) {                              //SC = (n-1-i)*4 = 4n-4-4i
+      if(after.get(j) == DISK_DARK && after.get(j + 1) == DISK_LIGHT) {     //SC = 3+1=4
         after.swap(j);
         swapCount++;
       }
 
     }
-    totalCount--;
+    totalCount--;                                                           //SC = 1
   }
 
   
-  return sorted_disks(after, swapCount);
+  return sorted_disks(after, swapCount);                                    //Total SC: 4n^2-4in-4i+n-3+3 = 4n^2-4in-4i+n 
 }
