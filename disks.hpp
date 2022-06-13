@@ -150,7 +150,7 @@ sorted_disks sort_lawnmower(const disk_state& before) {
     int rotation = 0;                                                             //SC = 1//
     int loops = 0;                                                                //SC = 1//
 
-    while(!after.is_sorted()) {                                                   //SC = (2n+4)*[(4n-8r)+(1)+(4n-8r)+(1)+(1)] = 16n^2-64r-32nr+38n+12
+    while(!after.is_sorted()) {                                                   //SC = (2n+4)*[(4n-8r)+(1)+(4n-8r)+(1)+(1)] = 16n^2-64r-32nr+38n+12, r=n/2
         for (int i = rotation; i < (totalCount - 1) - rotation; i++) {            //SC = [(n-1-r)-r+1]*[3+1] = 4n-8r//
             if(after.get(i) == DISK_DARK && after.get(i+1) == DISK_LIGHT) {       //SC = 3+1
                 after.swap(i);
@@ -170,11 +170,9 @@ sorted_disks sort_lawnmower(const disk_state& before) {
     }
 
 
-    std::cout << "HERE: " << rotation << std::endl;
-    std::cout << "HERE2: " << after.total_count() << std::endl;
   return sorted_disks(after, swapCount);
 }                                                                                 //Total SC: 16n^2-64r-32nr+38n+12+5 = 16n^2-64r-32nr+38n+17
-
+                                                                                  //Total SC(without r): 6n+17+5 = 6n+22
 
 // Algorithm that sorts disks using the alternate algorithm.
 sorted_disks sort_alternate(const disk_state& before) {
