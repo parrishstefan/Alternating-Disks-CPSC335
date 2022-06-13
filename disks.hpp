@@ -182,17 +182,15 @@ sorted_disks sort_alternate(const disk_state& before) {
   int swapCount = 0;                                                        //SC = 1//
   int totalCount = after.total_count();                                     //SC = 1//
 
-  for( int i = 0; i < totalCount; i++) {                                    //SC = (n+1)*(4n-4-4i+1) = 4n^2-4in-4i+n-3
-    for( int j = i; j < totalCount - 1; j++) {                              //SC = (n-1-i)*4 = 4n-4-4i
+  for(int i = 0; i < totalCount; i++) {                                    //SC = (n+1)*(4n-4-4i+1) = 4n^2-4in-4i+n-3, i=n/2
+    for(int j = i; j < totalCount - 1; j++) {                              //SC = (n-1-i)*4 = 4n-4-4i
       if(after.get(j) == DISK_DARK && after.get(j + 1) == DISK_LIGHT) {     //SC = 3+1=4
         after.swap(j);
         swapCount++;
       }
-
     }
     totalCount--;                                                           //SC = 1
   }
 
-  
   return sorted_disks(after, swapCount);                                    //Total SC: 4n^2-4in-4i+n-3+3 = 4n^2-4in-4i+n 
-}
+}                                                                           //Total SC(without i): 2n^2-n
